@@ -46,8 +46,13 @@ class BlackjackEnv(gym.Env):
         print('dealer sum before hit/stay', self.dealer_sum)
         if action == 1:  # "hit"
             print('hit')
-            new_val, _ = self._deal_card(self.player_sum, self.usable_ace)
+            new_val = self._get_card()
+            print('player dealt card', new_val)
             self.player_sum += new_val;
+            if self.player_sum > 21 and self.usable_ace:
+                print('used ace')
+                self.player_sum -= 10
+                self.usable_ace = 0
             if self.player_sum > 21:
                 self.round_done = True
 
@@ -61,8 +66,9 @@ class BlackjackEnv(gym.Env):
             print ('round finished')
             print('initial dealer sum', self.dealer_sum)
             while self.dealer_sum < 17:
-                new_val, _ = self._deal_card(self.dealer_sum, False)
+                new_val = self._get_card()
                 # dealer's ace is always 11
+                print('dealer dealt card', new_val)
                 self.dealer_sum += new_val
                 print('updated dealer sum', self.dealer_sum)
 
@@ -102,15 +108,13 @@ class BlackjackEnv(gym.Env):
 
         return player_sum, dealer_sum, usable_ace
 
-
+    # THE ERROR IS HERE BUT NOT ANYMORE!
     def _deal_card(self, sum_value, usable_ace):
         # get new card
         card = self._get_card()
-        sum_value += card
-        if sum_value > 21 and usable_ace:
-            sum_value -= 10
-            usable_ace = 0
-        return sum_value, usable_ace
+        # sum_value += card
+        # return sum_value, usable_ace
+        return card, usable_ace
 
 
     
@@ -135,11 +139,13 @@ class BlackjackEnv(gym.Env):
         print ('getting rewards')
         if self.player_sum > 21:
             print('player bust')
+            print(' \n\n\n\nplayer loss\n\n\n\n')
             return -1  # player bust
 
 
         if self.dealer_sum > 21:
             print('dealer bust')
+            print(' \n\n\n\nplayer win\n\n\n\n')
             return 1  # dealer bust
 
 
@@ -151,6 +157,7 @@ class BlackjackEnv(gym.Env):
                 print(' \n\n\n\nplayer loss\n\n\n\n')
                 return -1  # player loss
             else:
+                print(' \n\n\n\ntie\n\n\n\n')
                 return 0  # same num
 
 

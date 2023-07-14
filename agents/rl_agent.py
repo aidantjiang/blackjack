@@ -6,7 +6,7 @@ import numpy as np
 from gym_environments.blackjack_env import BlackjackEnv
 
 class QLearningAgent:
-    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.1):
+    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.9): # change epsilon back to ???;
         self.env = env
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
@@ -53,4 +53,4 @@ agent = QLearningAgent(env)
 
 
 # train the agent
-agent.train(num_episodes=2)
+agent.train(num_episodes=1)
