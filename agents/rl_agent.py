@@ -26,6 +26,7 @@ class QLearningAgent:
 
     def update_q_table(self, observation, action, reward, next_observation):
         current_q = self.q_table[observation][action]
+        print('next_observation', next_observation)
         max_q = np.max(self.q_table[next_observation])
         new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (reward + self.discount_factor * max_q)
         self.q_table[observation][action] = new_q
@@ -33,7 +34,7 @@ class QLearningAgent:
 
     def train(self, num_episodes):
         for episode in range(num_episodes):
-            print('episode ', episode + 1)
+            print('episode ', episode + 1, '\n\n\n\n\n')
             observation = self.env.reset()
             done = False
             while not done:
