@@ -2,15 +2,17 @@
 
 import gym
 import numpy as np
+import matplotlib.pyplot as plt
 
 from gym_environments.blackjack_env import BlackjackEnv
 
 class QLearningAgent:
-    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.9): # change epsilon back to ???;
+    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.9, epsilon_decay=0.0002): # change epsilon back to ???;
         self.env = env
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
         self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
         self.q_table = np.zeros((env.observation_space[0].n, env.observation_space[1].n, env.observation_space[2].n, env.action_space.n))
 
 
@@ -26,22 +28,38 @@ class QLearningAgent:
 
     def update_q_table(self, observation, action, reward, next_observation):
         current_q = self.q_table[observation][action]
-        print('next_observation', next_observation)
         max_q = np.max(self.q_table[next_observation])
         new_q = (1 - self.learning_rate) * current_q + self.learning_rate * (reward + self.discount_factor * max_q)
         self.q_table[observation][action] = new_q
 
 
     def train(self, num_episodes):
+        episode_rewards = []
+        avg_rewards = []
+        total_reward = 0
         for episode in range(num_episodes):
-            print('episode ', episode + 1, '\n\n\n\n\n')
             observation = self.env.reset()
             done = False
+            total_reward = 0
             while not done:
                 action = self.choose_action(observation)
                 next_observation, reward, done, _ = self.env.step(action)
                 self.update_q_table(observation, action, reward, next_observation)
                 observation = next_observation
+                total_reward += reward
+            if (episode + 1) % 10000 == 0:
+                episode_rewards.append(total_reward)
+                avg_reward = total_reward / 10000  # Calculate average reward
+                avg_rewards.append(avg_reward)
+                print('Episode', episode + 1, 'completed')
+                total_reward = 0
+            self.epsilon -= self.epsilon_decay
+        x = range(10000, num_episodes + 1, 10000)
+        plt.plot(x, avg_rewards)
+        plt.xlabel('Episodes')
+        plt.ylabel('Average Reward')
+        plt.title('Q-learning Performance')
+        plt.show()
 
 
 # create the Blackjack environment
@@ -53,4 +71,14 @@ agent = QLearningAgent(env)
 
 
 # train the agent
-agent.train(num_episodes=1)
+agent.train(num_episodes=100000)
+
+# Test the agent
+num_episodes = 10
+for episode in range(num_episodes):
+    observation = env.reset()
+    done = False
+    while not done:
+        action = np.argmax(agent.q_table[observation])
+        observation, reward, done, _ = env.step(action)
+    env.render()
