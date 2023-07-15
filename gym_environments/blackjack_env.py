@@ -86,9 +86,13 @@ class BlackjackEnv(gym.Env):
     def render(self, mode='human'):
         # Implement the logic for rendering the current state of the environment
         # ...
-        print('RESULTS: \n')
-        print('player: ', self.player_sum)
-        print('dealer: ', self.dealer_sum, '\n')
+        num = self._get_reward()
+        print('agent', self.player_sum)
+        print('dealer', self.dealer_sum)
+        if num == 10 or num == 100:
+            print('win\n')
+        else:
+            print('lose/draw\n')
 
 
     def _create_deck(self):
@@ -142,25 +146,25 @@ class BlackjackEnv(gym.Env):
         if self.player_sum > 21:
             # print('player bust')
             # print(' \n\n\n\nplayer loss\n\n\n\n')
-            return -10  # player bust
+            return -100  # player bust
 
 
         if self.dealer_sum > 21:
             # print('dealer bust')
             # print(' \n\n\n\nplayer win\n\n\n\n')
-            return 1  # dealer bust
+            return 10  # dealer bust
 
 
         if self.round_done:
             if self.player_sum > self.dealer_sum:
                 # print(' \n\n\n\nplayer win\n\n\n\n')
-                return 10  # player win
+                return 100  # player win
             elif self.player_sum < self.dealer_sum:
                 # print(' \n\n\n\nplayer loss\n\n\n\n')
-                return -10  # player loss
+                return -100  # player loss
             else:
                 # print(' \n\n\n\ntie\n\n\n\n')
-                return -1  # same num
+                return 0 # same num
 
 
-        return -1  # continue
+        return 0  # continue

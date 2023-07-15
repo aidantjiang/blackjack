@@ -71,7 +71,7 @@ agent = QLearningAgent(env)
 
 
 # train the agent
-agent.train(num_episodes=100000)
+agent.train(num_episodes=200000)
 
 # Test the agent
 num_episodes = 10
