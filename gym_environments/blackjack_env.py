@@ -119,7 +119,6 @@ class BlackjackEnv(gym.Env):
         # get new card
         card = self._get_card()
         # sum_value += card
-        # return sum_value, usable_ace
         return card, usable_ace
 
 
