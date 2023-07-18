@@ -20,3 +20,9 @@ RULES
 - the dealer must: "stay" (as opposed to "hit", or get another card) if they are >= 17 in term of card value
 
 this implements a q-learning algorithmic approach to train an agent into learning how to play blackjack using reinforcement learning
+
+ERROR FIXING
+
+- to be safe, when first initializing this project, run 'export PYTHONPATH='.'' after you've cd'ed into the blackjack folder
+- then, to simulate the reinforcement learning agent, run 'python3 agents/rl_agent.py'
+- to run the pygame, run 'python3 main.py'
