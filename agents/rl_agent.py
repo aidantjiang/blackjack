@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from gym_environments.blackjack_env import BlackjackEnv
 
 class QLearningAgent:
-    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.9, epsilon_decay=0.0002): # change epsilon back to ???;
+    def __init__(self, env, learning_rate=0.1, discount_factor=0.9, epsilon=0.9, epsilon_decay=0.000005): # change epsilon back to ???;
         self.env = env
         self.learning_rate = learning_rate
         self.discount_factor = discount_factor
@@ -47,14 +47,14 @@ class QLearningAgent:
                 self.update_q_table(observation, action, reward, next_observation)
                 observation = next_observation
                 total_reward += reward
-            if (episode + 1) % 10000 == 0:
+            if (episode + 1) % 50000 == 0:
                 episode_rewards.append(total_reward)
-                avg_reward = total_reward / 10000  # Calculate average reward
+                avg_reward = total_reward / 50000  # Calculate average reward
                 avg_rewards.append(avg_reward)
                 print('Episode', episode + 1, 'completed')
                 total_reward = 0
             self.epsilon -= self.epsilon_decay
-        x = range(10000, num_episodes + 1, 10000)
+        x = range(50000, num_episodes + 1, 50000)
         plt.plot(x, avg_rewards)
         plt.xlabel('Episodes')
         plt.ylabel('Average Reward')
@@ -71,7 +71,7 @@ agent = QLearningAgent(env)
 
 
 # train the agent
-agent.train(num_episodes=100000)
+agent.train(num_episodes=400000)
 
 # Test the agent
 num_episodes = 10
