@@ -17,7 +17,7 @@ def main():
     
     deck._deal_initial_cards()
 
-    #COLORS
+    #COLOR PALLATE
     DARK_BLUE = (43, 65, 98)
     BLUE_GREY = (56, 95, 113)
     OFF_WHITE = (245, 240, 246)
@@ -31,7 +31,8 @@ def main():
         deck._get_card('player')
         click.play()
     def stay():
-        print('stay')
+        deck._get_card('dealer')
+        click.play()
     buttons = []
     button_width = 100
     button_height = 40
@@ -56,7 +57,7 @@ def main():
         dealer_cards = deck.dealerCards
         player_cards = deck.playerCards
 
-        #CARD VARIABLES
+        # CARD VARIABLES
         padding = 10
         player_card_delay = 10 + (20 * (len(player_cards) - 1))
         dealer_card_delay = 10
@@ -66,20 +67,23 @@ def main():
                 for y in range(0, screen_height, pattern_height):
                     screen.blit(pattern_image, (x, y))
 
+        # PYGAME EVENTS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             for button in buttons:
                 button.handle_event(event)
+
         # SHOW BUTTONS
         for button in buttons:
             button.draw(screen)
 
         # SHOW DEALER CARDS
         for card in dealer_cards:
-            screen.blit(card, (padding, 10))
+            screen.blit(card, (dealer_card_delay, 10))
             dealer_card_delay += 20
-        screen.blit(deck.cardBacks[0], (dealer_card_delay, 10))
+        if (len(dealer_cards) < 2):
+            screen.blit(deck.cardBacks[0], (dealer_card_delay, 10))
 
         # SHOW PLAYER CARDS
         for card in player_cards:
