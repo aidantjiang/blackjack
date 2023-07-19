@@ -4,6 +4,8 @@ pip install gym
 pip install numpy
 pip install matplotlib
 
+to install all needed pip packages, run `pip install -r requirements.txt`
+
 ## how blackjack works
 
 CARD VALUES
