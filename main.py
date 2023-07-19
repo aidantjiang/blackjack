@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 
 from visualization.deck import Deck
 from visualization.button import Button
@@ -7,6 +8,7 @@ deck = Deck()
 
 def main():
     pygame.init()
+    mixer.init()
     screen = pygame.display.set_mode((640, 480), 0, 32)
     screen_width = screen.get_width()
     screen_height = screen.get_height()
@@ -27,6 +29,7 @@ def main():
     #BUTTONS
     def hit():
         deck._get_card('player')
+        click.play()
     def stay():
         print('stay')
     buttons = []
@@ -44,6 +47,10 @@ def main():
     pattern_image = pygame.image.load("public/pattern.png")
     pattern_image = pygame.transform.scale(pattern_image, (pattern_image.get_width() / 6, pattern_image.get_height() / 6))
     pattern_width, pattern_height = pattern_image.get_size()
+
+    #SOUND EFFECTS
+    click = pygame.mixer.Sound('public/sounds/click_high.wav')
+    click.set_volume(0.1)
 
     while (running):
         dealer_cards = deck.dealerCards
