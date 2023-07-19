@@ -8,6 +8,9 @@ class Deck:
         self.drawnCards = []
         # example: [(3, Surface), (10, Surface)] # 3, King
         self.cardBacks = [] # red and blue card back images (data looks like this: [Surface, Surface])
+        self.dealerCards = []
+        self.playerCards = []
+        self.agentCards = []
         self._create_deck()
     def _create_deck(self):
         # vars and consts
@@ -61,10 +64,18 @@ class Deck:
             shuffled_deck = random.sample(self.deck, len(self.deck))
             self.deck = [card_tuple for card_tuple in shuffled_deck]
 
-    def _get_card(self):
+    def _get_card(self, requester='agent'):
         if len(self.deck) == 0:
             self._create_deck()
         card = self.deck.pop(0)
+        num, surface = card
+        if (requester == 'player'):
+            self.playerCards.append(surface)
+        elif (requester == 'dealer'):
+            self.dealerCards.append(surface)
+        else:
+            self.agentCards.append(surface)
+
         self.drawnCards.append(card)
         return card # type (num, surface)
     
@@ -82,6 +93,8 @@ class Deck:
         #for pygame env
         surfaces = []
         surfaces.extend([surface1, surface2, surface3])
+        self.dealerCards.append(surface1)
+        self.playerCards.extend([surface2, surface3])
 
 
         return surfaces, player_sum, dealer_sum, usable_ace

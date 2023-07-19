@@ -13,7 +13,7 @@ def main():
     pygame.display.set_caption('blackjack')
     pygame.display.set_icon(deck.cardBacks[1])
     
-    cards, _, _, _ = deck._deal_initial_cards()
+    deck._deal_initial_cards()
 
     #COLORS
     DARK_BLUE = (43, 65, 98)
@@ -25,29 +25,59 @@ def main():
     running = True
 
     #BUTTONS
-    def button_click():
-        print('hit')
+    def hit():
+        deck._get_card('player')
+    def stay():
+        print('stay')
     buttons = []
     button_width = 100
     button_height = 40
-    button_x = (screen_width - button_width) // 2
-    button_y = (screen_height - button_height) // 2
-    my_button = Button(button_x, button_y, button_width, button_height, "hit", button_click)
-    buttons.append(my_button)
+    hit_button_x = ((screen_width - button_width) // 2) - button_width // 2 - 10
+    hit_button_y = (screen_height - button_height) // 2
+    stay_button_x = ((screen_width - button_width) // 2) + button_width // 2 + 10
+    stay_button_y = (screen_height - button_height) // 2
+    hit_button = Button(hit_button_x, hit_button_y, button_width, button_height, "hit", hit)
+    stay_button = Button(stay_button_x, stay_button_y, button_width, button_height, "stay", stay)
+    buttons.extend([hit_button, stay_button])
+
+    #TILE
+    pattern_image = pygame.image.load("public/pattern.png")
+    pattern_image = pygame.transform.scale(pattern_image, (pattern_image.get_width() / 6, pattern_image.get_height() / 6))
+    pattern_width, pattern_height = pattern_image.get_size()
 
     while (running):
-        screen.fill(DARK_BLUE)
+        dealer_cards = deck.dealerCards
+        player_cards = deck.playerCards
+
+        #CARD VARIABLES
+        padding = 10
+        player_card_delay = 10 + (20 * (len(player_cards) - 1))
+        dealer_card_delay = 10
+
+        screen.fill(BLUE_GREY)
+        for x in range(0, screen_width, pattern_width):
+                for y in range(0, screen_height, pattern_height):
+                    screen.blit(pattern_image, (x, y))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             for button in buttons:
                 button.handle_event(event)
+        # SHOW BUTTONS
         for button in buttons:
             button.draw(screen)
-        screen.blit(deck.deck[20][1], (10, 10))
-        screen.blit(deck.cardBacks[0], (30, 10))
-        screen.blit(cards[2], (screen_width - 30 - cards[2].get_width(), screen_height - 10 - cards[2].get_height()))
-        screen.blit(cards[0], (screen_width - 10 - cards[0].get_width(), screen_height - 10 - cards[0].get_height()))
+
+        # SHOW DEALER CARDS
+        for card in dealer_cards:
+            screen.blit(card, (padding, 10))
+            dealer_card_delay += 20
+        screen.blit(deck.cardBacks[0], (dealer_card_delay, 10))
+
+        # SHOW PLAYER CARDS
+        for card in player_cards:
+            screen.blit(card, (screen_width - player_card_delay - card.get_width(), screen_height - padding - card.get_height()))
+            player_card_delay -= 20
         pygame.display.flip()
 
 if __name__ == "__main__":

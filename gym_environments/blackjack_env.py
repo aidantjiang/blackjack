@@ -17,7 +17,7 @@ class BlackjackEnv(gym.Env):
             spaces.Discrete(34),  # current sum range 0-32
             spaces.Discrete(34),  # dealer sum range 0-32
             spaces.Discrete(2)    # ace y/n
-        ))
+        )) # TODO: spaces should be Discrete(32), Discrete(32), Discrete(2)
 
         self.player_sum = None
         self.dealer_sum = None
@@ -43,7 +43,7 @@ class BlackjackEnv(gym.Env):
         # print('dealer sum before hit/stay', self.dealer_sum)
         if action == 1:  # "hit"
             # print('hit')
-            new_val, _ = deck._get_card()
+            new_val, _ = deck._get_card('agent')
             # print('player dealt card', new_val)
             self.player_sum += new_val;
             if self.player_sum > 21 and self.usable_ace:
@@ -63,7 +63,7 @@ class BlackjackEnv(gym.Env):
             # print ('round finished')
             # print('initial dealer sum', self.dealer_sum)
             while self.dealer_sum < 17:
-                new_val, _ = deck._get_card()
+                new_val, _ = deck._get_card('dealer')
                 # dealer's ace is always 11
                 # print('dealer dealt card', new_val)
                 self.dealer_sum += new_val

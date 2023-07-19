@@ -47,14 +47,14 @@ class QLearningAgent:
                 self.update_q_table(observation, action, reward, next_observation)
                 observation = next_observation
                 total_reward += reward
-            if (episode + 1) % 50000 == 0:
+            if (episode + 1) % 40000 == 0:
                 episode_rewards.append(total_reward)
-                avg_reward = total_reward / 50000  # Calculate average reward
+                avg_reward = total_reward / 40000  # Calculate average reward
                 avg_rewards.append(avg_reward)
                 print('Episode', episode + 1, 'completed')
                 total_reward = 0
             self.epsilon -= self.epsilon_decay
-        x = range(50000, num_episodes + 1, 50000)
+        x = range(40000, num_episodes + 1, 40000)
         plt.plot(x, avg_rewards)
         plt.xlabel('Episodes')
         plt.ylabel('Average Reward')
