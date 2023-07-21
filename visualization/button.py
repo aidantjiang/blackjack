@@ -20,21 +20,26 @@ class Button:
         self.text = text
         self.action = action
         self.font = font
+        self.visible = True
 
         #click effect
         self.default_color = (255,255,255)
         self.click_color = OFF_WHITE
         self.current_color = self.default_color
+    def set_visibility(self, boolean):
+        self.visible = boolean
     def draw(self, screen):
-        pygame.draw.rect(screen, self.current_color, self.rect)
-        text_surface = self.font.render(self.text, True, (0, 0, 0))
-        text_rect = text_surface.get_rect(center=self.rect.center)
-        screen.blit(text_surface, text_rect)
+        if self.visible:  # Only draw the button if it's visible
+            pygame.draw.rect(screen, self.current_color, self.rect)
+            text_surface = self.font.render(self.text, True, (0, 0, 0))
+            text_rect = text_surface.get_rect(center=self.rect.center)
+            screen.blit(text_surface, text_rect)
     def handle_event(self, event):
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            if self.rect.collidepoint(event.pos):
-                self.current_color = self.click_color
-                self.action()
-        elif event.type == MOUSEBUTTONUP and event.button == 1:
-            if self.rect.collidepoint(event.pos):
-                self.current_color = self.default_color
+        if self.visible:  # Handle events only if the button is visible
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                if self.rect.collidepoint(event.pos):
+                    self.current_color = self.click_color
+                    self.action()
+            elif event.type == MOUSEBUTTONUP and event.button == 1:
+                if self.rect.collidepoint(event.pos):
+                    self.current_color = self.default_color

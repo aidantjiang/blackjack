@@ -36,7 +36,7 @@ def main():
 
     pygame.init()
     mixer.init()
-    robot.train(num_episodes=20000)
+    robot.train(num_episodes=400000)
     screen = pygame.display.set_mode((640, 480), pygame.DOUBLEBUF | pygame.HWSURFACE | pygame.HWACCEL)
 
     screen_width = screen.get_width()
@@ -79,7 +79,7 @@ def main():
     stay_button_x = ((screen_width - button_width) // 2) + button_width // 2 + 10
     stay_button_y = (screen_height - button_height) // 2
     replay_button_x = screen_width // 2 - big_button_width // 2
-    replay_button_y = screen_width // 2 - big_button_height // 2
+    replay_button_y = screen_width // 2 - big_button_height - 10
     hit_button = Button(hit_button_x, hit_button_y, button_width, button_height, "hit", hit)
     stay_button = Button(stay_button_x, stay_button_y, button_width, button_height, "stay", stay)
     replay_button = Button(replay_button_x, replay_button_y, big_button_width, big_button_height, 'replay', replay)
@@ -143,7 +143,20 @@ def main():
 
         # SHOW BUTTONS
         for button in buttons:
-            button.draw(screen)
+            if (not player.done):
+                if (buttons.index(button) == 2):
+                    button.set_visibility(False)
+                else:
+                    button.set_visibility(True)
+                    button.draw(screen)
+            else:
+                if (buttons.index(button) != 2):
+                    button.set_visibility(False)
+                else:
+                    if (dealer.stop):
+                        button.draw(screen)
+                        button.set_visibility(True)
+                        screen.blit(player_bust_img, (0, 0))
 
         # SHOW DEALER CARDS
         for card in dealer_cards:
