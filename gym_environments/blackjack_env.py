@@ -1,6 +1,7 @@
 import gym
 from gym import spaces
 import numpy as np
+import time
 from visualization.game import deck
 # from visualization.deck import Deck
 
@@ -24,17 +25,21 @@ class BlackjackEnv(gym.Env):
         self.usable_ace = None
         self.round_done = None
 
+        self.cards = None
+
         # initialize envrion
         self.reset()
     def reset(self):
         deck._create_deck()
-        _, self.player_sum, self.dealer_sum, self.usable_ace = deck._deal_initial_cards()
+        surfaces, self.player_sum, self.dealer_sum, self.usable_ace = deck._deal_initial_cards()
         self.round_done = False
+
+        self.cards = [surfaces[0], surfaces[1]]
 
         return self._get_observation()
 
 
-    def step(self, action):
+    def step(self, action, game=False):
         # import pdb; pdb.set_trace()
         assert self.action_space.contains(action), "Invalid action"
         # print('stepping')
@@ -43,7 +48,8 @@ class BlackjackEnv(gym.Env):
         # print('dealer sum before hit/stay', self.dealer_sum)
         if action == 1:  # "hit"
             # print('hit')
-            new_val, _ = deck._get_card()
+            new_val, surface = deck._get_card()
+            self.cards.append(surface)
             if new_val == 11:
                 self.usable_ace += 1
             # print('player dealt card', new_val)
@@ -76,6 +82,10 @@ class BlackjackEnv(gym.Env):
         # done
         reward = self._get_reward()
         self.round_done = True if reward != 0 else self.round_done
+
+        # pause in game
+        if (game):
+            time.sleep(0.6)
 
 
         # Return the updated observation, reward, and done flag

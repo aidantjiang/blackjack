@@ -7,6 +7,10 @@ class Dealer:
         self.total = total
         self.cards = [initial_cards]
         self.stop = False
+    def _reset(self, total, initial_cards):
+        self.total = total
+        self.cards = [initial_cards]
+        self.stop = False
     def _move(self, type):
         if (type == 'hit'):
             if (not self.stop):
@@ -18,4 +22,4 @@ class Dealer:
                     if (self.total > 21):
                         #code here
                         pass
-        time.sleep(0.5)
+        time.sleep(0.6)

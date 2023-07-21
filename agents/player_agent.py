@@ -6,6 +6,11 @@ class Player:
         self.cards = initial_cards
         self.done = False
         self.usable_ace = usable_ace
+    def _reset(self, total, initial_cards, usable_ace):
+        self.total = total
+        self.cards = initial_cards
+        self.done = False
+        self.usable_ace = usable_ace
     def _move(self, type):
         if (type == 'hit'):
             if (not self.done):

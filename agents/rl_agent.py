@@ -54,31 +54,10 @@ class QLearningAgent:
                 print('Episode', episode + 1, 'completed')
                 total_reward = 0
             self.epsilon -= self.epsilon_decay
-        x = range(40000, num_episodes + 1, 40000)
-        plt.plot(x, avg_rewards)
-        plt.xlabel('Episodes')
-        plt.ylabel('Average Reward')
-        plt.title('Q-learning Performance')
-        plt.show()
-
-
-# create the Blackjack environment
-env = BlackjackEnv()
-
-
-# create the Q-learning agent
-agent = QLearningAgent(env)
-
-
-# train the agent
-agent.train(num_episodes=400000)
-
-# Test the agent
-num_episodes = 10
-for episode in range(num_episodes):
-    observation = env.reset()
-    done = False
-    while not done:
-        action = np.argmax(agent.q_table[observation])
-        observation, reward, done, _ = env.step(action)
-    env.render()
+            
+#         x = range(40000, num_episodes + 1, 40000)
+#         plt.plot(x, avg_rewards)
+#         plt.xlabel('Episodes')
+#         plt.ylabel('Average Reward')
+#         plt.title('Q-learning Performance')
+#         plt.show()

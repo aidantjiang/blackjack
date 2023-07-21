@@ -72,6 +72,8 @@ class Deck:
     
     def _deal_initial_cards(self):
         # initial cards -- one to dealer, two to player
+        usable_ace = 0
+
         value1, surface1 = self._get_card()
         value2, surface2 = self._get_card()
         value3, surface3 = self._get_card()
@@ -79,7 +81,10 @@ class Deck:
         #for gym env
         player_sum = value1 + value2
         dealer_sum = value3
-        usable_ace = 1 if value1 == 11 or value2 == 11 else 0
+        if value1 == 11:
+            usable_ace += 1
+        if value2 == 11:
+            usable_ace += 1
         #dealer cannot use aces
 
         #for pygame env
