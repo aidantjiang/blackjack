@@ -1,7 +1,7 @@
 import gym
 from gym import spaces
 import numpy as np
-from main import deck
+from visualization.game import deck
 # from visualization.deck import Deck
 
 # deck = Deck()
@@ -16,7 +16,7 @@ class BlackjackEnv(gym.Env):
         self.observation_space = spaces.Tuple((
             spaces.Discrete(34),  # current sum range 0-32
             spaces.Discrete(34),  # dealer sum range 0-32
-            spaces.Discrete(2)    # ace y/n
+            spaces.Discrete(5)    # ace # you COULD be dealt 4 aces
         )) # TODO: spaces should be Discrete(32), Discrete(32), Discrete(2)
 
         self.player_sum = None
@@ -43,13 +43,15 @@ class BlackjackEnv(gym.Env):
         # print('dealer sum before hit/stay', self.dealer_sum)
         if action == 1:  # "hit"
             # print('hit')
-            new_val, _ = deck._get_card('agent')
+            new_val, _ = deck._get_card()
+            if new_val == 11:
+                self.usable_ace += 1
             # print('player dealt card', new_val)
             self.player_sum += new_val;
             if self.player_sum > 21 and self.usable_ace:
                 # print('used ace')
                 self.player_sum -= 10
-                self.usable_ace = 0
+                self.usable_ace -= 1
             if self.player_sum > 21:
                 self.round_done = True
 
@@ -63,7 +65,7 @@ class BlackjackEnv(gym.Env):
             # print ('round finished')
             # print('initial dealer sum', self.dealer_sum)
             while self.dealer_sum < 17:
-                new_val, _ = deck._get_card('dealer')
+                new_val, _ = deck._get_card()
                 # dealer's ace is always 11
                 # print('dealer dealt card', new_val)
                 self.dealer_sum += new_val

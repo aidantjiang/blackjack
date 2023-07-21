@@ -1,10 +1,27 @@
 import pygame
 from pygame import mixer
 
-from visualization.deck import Deck
+from visualization.transition import Transition
 from visualization.button import Button
+from visualization.game import deck
 
-deck = Deck()
+from agents.player_agent import Player
+from agents.dealer_agent import Dealer
+initial_cards, player_sum, dealer_sum, ace = deck._deal_initial_cards()
+
+#declare agents
+dealer = Dealer(dealer_sum, initial_cards[2])
+player = Player(player_sum, [initial_cards[0], initial_cards[1]], ace)
+
+#declare other classes
+transition_player = Transition()
+dealer_bust_img = transition_player.images['dealer_bust']
+player_bust_img = transition_player.images['player_bust']
+robot_bust_img = transition_player.images['robot_bust']
+dealer_turn_img = transition_player.images['dealer_turn']
+dealer_wins_img = transition_player.images['dealer_wins']
+player_wins_img = transition_player.images['player_wins']
+robot_win_img = transition_player.images['robot_win']
 
 def main():
     pygame.init()
@@ -14,8 +31,6 @@ def main():
     screen_height = screen.get_height()
     pygame.display.set_caption('blackjack')
     pygame.display.set_icon(deck.cardBacks[1])
-    
-    deck._deal_initial_cards()
 
     #COLOR PALLATE
     DARK_BLUE = (43, 65, 98)
@@ -28,10 +43,10 @@ def main():
 
     #BUTTONS
     def hit():
-        deck._get_card('player')
+        player._move('hit')
         click.play()
     def stay():
-        deck._get_card('dealer')
+        player._move('stay')
         click.play()
     buttons = []
     button_width = 100
@@ -51,11 +66,11 @@ def main():
 
     #SOUND EFFECTS
     click = pygame.mixer.Sound('public/sounds/click_high.wav')
-    click.set_volume(0.1)
+    click.set_volume(0.5)
 
     while (running):
-        dealer_cards = deck.dealerCards
-        player_cards = deck.playerCards
+        dealer_cards = dealer.cards
+        player_cards = player.cards
 
         # CARD VARIABLES
         padding = 10
@@ -70,6 +85,7 @@ def main():
         # PYGAME EVENTS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                print(dealer.cards)
                 running = False
             for button in buttons:
                 button.handle_event(event)
@@ -77,6 +93,11 @@ def main():
         # SHOW BUTTONS
         for button in buttons:
             button.draw(screen)
+
+        #DEAL CARDS FOR DEALER?
+        if (player.done):
+            if (not dealer.stop):
+                dealer._move('hit')
 
         # SHOW DEALER CARDS
         for card in dealer_cards:
